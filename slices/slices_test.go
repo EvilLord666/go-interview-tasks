@@ -31,3 +31,12 @@ func TestSliceBasedOnSlicesWithReAlloc(t *testing.T) {
 	assert.Equal(t, slice1, []int{1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 10})
 	assert.Equal(t, slice2, []int{9, 4, 5})
 }
+
+func TestSliceBasedOnSmallerSliceWithSmallerModification(t *testing.T) {
+	//
+	slice1 := []int{1, 2, 3}
+	slice2 := make([]int, 0, 10)
+	slice2 = append(slice2, slice1...)
+	slice1[1] = 9
+	assert.Equal(t, slice2, []int{1, 2, 3})
+}
