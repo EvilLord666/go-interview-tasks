@@ -7,10 +7,12 @@ import (
 	"time"
 )
 
-func TestCombineAllChannel(t *testing.T) {
+func TestInputChannelsCombineIntoOne(t *testing.T) {
 
 	// Function that combines data from multiple channels into single one,
-	// !!! not completed yet
+	// Fan out pattern, it runes goRoutinesNum of goroutines and write after random delay
+	// random amount of messages, after all it closes its channel
+	// This is implementation of Fan Out pattern
 
 	const goRoutinesNum = 3
 	var channels []chan int
@@ -27,15 +29,23 @@ func TestCombineAllChannel(t *testing.T) {
 	for i := 0; i < goRoutinesNum; i++ {
 		val := i
 		go func(n int, ch chan int) {
-			delay := rand.Intn(30)
-			time.Sleep(time.Duration(delay) * time.Millisecond)
-			ch <- n + 1
+			messageNumber := rand.Intn(10) + 2
+			for c := 0; c < messageNumber; c++ {
+				delay := rand.Intn(10) + 1
+				time.Sleep(time.Duration(delay) * time.Millisecond)
+				ch <- n + 1
+			}
+			close(ch)
 		}(val, channels[i])
 	}
 
-	for i := 0; i < goRoutinesNum; i++ {
-		out := <-combineChannel
-		fmt.Println(out)
+	for {
+		out, ok := <-combineChannel
+		if !ok {
+			fmt.Println("All input channels were closed")
+			break
+		}
+		fmt.Printf("Received data from channel: %d\n", out)
 	}
 }
 
