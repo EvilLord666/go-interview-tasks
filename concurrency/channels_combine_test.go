@@ -9,7 +9,8 @@ import (
 
 func TestCombineAllChannel(t *testing.T) {
 
-	// Function that combines
+	// Function that combines data from multiple channels into single one,
+	// !!! not completed yet
 
 	const goRoutinesNum = 3
 	var channels []chan int
